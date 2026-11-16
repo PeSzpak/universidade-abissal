@@ -1,5 +1,6 @@
 -- Universidade Abissal: cria o banco, as tabelas e dados de exemplo.
 -- Rode uma vez: mysql -u root -p < database/banco.sql   (ou importe pelo phpMyAdmin)
+SET NAMES utf8mb4;
 
 CREATE DATABASE IF NOT EXISTS universidade_abissal
     CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
