@@ -7,6 +7,7 @@ $cursos = conectar()->query("SELECT c.*, COUNT(a.id) AS total_alunos
 
 $titulo = "Cursos";
 $base = "../";
+$secaoAtual = "cursos";
 include __DIR__ . "/../includes/cabecalho.php";
 ?>
 <div class="cabecalho-pagina">
@@ -17,7 +18,7 @@ include __DIR__ . "/../includes/cabecalho.php";
 <div class="tabela-envolve">
     <table>
         <thead>
-            <tr><th>Curso</th><th>Departamento</th><th>Duração</th><th>Vagas</th><th>Alunos</th><th>Ações</th></tr>
+            <tr><th>Curso</th><th>Departamento</th><th>Duração</th><th class="num">Vagas</th><th class="num">Alunos</th><th>Ações</th></tr>
         </thead>
         <tbody>
         <?php foreach ($cursos as $curso): ?>
@@ -25,8 +26,8 @@ include __DIR__ . "/../includes/cabecalho.php";
                 <td><?= h($curso["nome"]) ?></td>
                 <td><?= h($curso["departamento"]) ?></td>
                 <td><?= (int) $curso["duracao_semestres"] ?> semestres</td>
-                <td><?= (int) $curso["vagas"] ?></td>
-                <td><a href="../alunos/listar.php?curso=<?= (int) $curso["id"] ?>"><?= (int) $curso["total_alunos"] ?></a></td>
+                <td class="num"><?= (int) $curso["vagas"] ?></td>
+                <td class="num"><a href="../alunos/listar.php?curso=<?= (int) $curso["id"] ?>"><?= (int) $curso["total_alunos"] ?></a></td>
                 <td>
                     <div class="acoes">
                         <a class="botao pequeno secundario" href="editar.php?id=<?= (int) $curso["id"] ?>">Editar</a>

@@ -55,6 +55,7 @@ $cursos = $pdo->query("SELECT id, nome FROM cursos ORDER BY nome")->fetchAll();
 
 $titulo = "Editar aluno";
 $base = "../";
+$secaoAtual = "alunos";
 $textoBotao = "Salvar alterações";
 include __DIR__ . "/../includes/cabecalho.php";
 ?>

@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $titulo = "Excluir aluno";
 $base = "../";
+$secaoAtual = "alunos";
 include __DIR__ . "/../includes/cabecalho.php";
 ?>
 <section class="formulario confirmacao">

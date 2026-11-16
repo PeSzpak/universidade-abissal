@@ -71,6 +71,7 @@ $cursos = $pdo->query("SELECT id, nome FROM cursos ORDER BY nome")->fetchAll();
 
 $titulo = "Alunos";
 $base = "../";
+$secaoAtual = "alunos";
 include __DIR__ . "/../includes/cabecalho.php";
 ?>
 <div class="cabecalho-pagina">
@@ -120,7 +121,7 @@ include __DIR__ . "/../includes/cabecalho.php";
 <div class="tabela-envolve">
     <table>
         <thead>
-            <tr><th>Nome</th><th>E-mail</th><th>Espécie</th><th>Idade</th><th>Curso</th><th>Matrícula</th><th>Ações</th></tr>
+            <tr><th>Nome</th><th>E-mail</th><th>Espécie</th><th class="num">Idade</th><th>Curso</th><th>Matrícula</th><th>Ações</th></tr>
         </thead>
         <tbody>
         <?php foreach ($alunos as $aluno): ?>
@@ -128,7 +129,7 @@ include __DIR__ . "/../includes/cabecalho.php";
                 <td><?= h($aluno["nome"]) ?></td>
                 <td><?= h($aluno["email"]) ?></td>
                 <td><?= h($aluno["especie"]) ?></td>
-                <td><?= (int) $aluno["idade"] ?></td>
+                <td class="num"><?= (int) $aluno["idade"] ?></td>
                 <td><?= h($aluno["curso"]) ?></td>
                 <td><?= date("d/m/Y", strtotime($aluno["criado_em"])) ?></td>
                 <td>

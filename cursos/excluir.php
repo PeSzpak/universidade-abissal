@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $titulo = "Excluir curso";
 $base = "../";
+$secaoAtual = "cursos";
 include __DIR__ . "/../includes/cabecalho.php";
 ?>
 <section class="formulario confirmacao">

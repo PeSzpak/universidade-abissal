@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 $titulo = "Novo curso";
 $base = "../";
+$secaoAtual = "cursos";
 $textoBotao = "Cadastrar curso";
 include __DIR__ . "/../includes/cabecalho.php";
 ?>

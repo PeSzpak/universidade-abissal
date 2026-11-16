@@ -41,6 +41,7 @@ $cursos = $pdo->query("SELECT id, nome FROM cursos ORDER BY nome")->fetchAll();
 
 $titulo = "Matricular aluno";
 $base = "../";
+$secaoAtual = "alunos";
 $textoBotao = "Matricular";
 include __DIR__ . "/../includes/cabecalho.php";
 ?>
