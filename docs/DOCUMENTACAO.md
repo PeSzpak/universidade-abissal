@@ -53,8 +53,10 @@ universidade-abissal/
 │   ├── excluir.php           confirmação + DELETE
 │   └── _form.php             formulário reaproveitado em cadastrar/editar
 ├── assets/
-│   ├── css/style.css         identidade visual
-│   └── img/logo.svg          logotipo (peixe-lanterna)
+│   ├── css/style.css         identidade visual e animações
+│   ├── js/movimento.js       entradas por seção, profundímetro e galeria
+│   ├── img/logo.svg          logotipo (peixe-pescador com a isca acesa)
+│   └── fotos/                gravuras e vídeo em domínio público (+ credits.json)
 ├── database/
 │   └── banco.sql             criação do banco, tabelas e dados de exemplo
 └── docs/
@@ -104,7 +106,16 @@ Edição: o ID vem da URL e é validado como inteiro; o registro é buscado no b
 
 Exclusão: o link abre uma tela de confirmação (GET, não apaga nada). Só o botão "Sim, excluir" envia um POST que executa o `DELETE`.
 
-## 8. Recursos de segurança
+## 8. Identidade visual
+
+- **Ideia:** a única luz a 4.000 metros é a isca do peixe-pescador. Por isso o site é escuro e tudo que é importante aparece dentro de um **círculo de luz**: as imagens, os botões, os marcadores das listas e a moldura da galeria.
+- **Cores:** água profunda (`#06121c`), luz bioluminescente verde-limão (`#dcf06a`) e a areia do leito do mar (`#e6dbc0`) na seção de cursos.
+- **Tipografia:** Roundo, uma única família.
+- **Imagens reais em domínio público:** gravuras do relatório da expedição H.M.S. Challenger (1872-1876, publicadas em 1887), que foi a primeira grande expedição científica ao fundo do mar; pranchas de Ernst Haeckel (*Kunstformen der Natur*, 1904); e um vídeo de água-viva filmada pela NOAA na Fossa das Marianas (2016). Os créditos estão no rodapé e em `assets/fotos/credits.json`.
+- **Movimento:** a luz da página inicial se acende abrindo do centro; os blocos de cada seção sobem em sequência ao entrar na tela; a gravura flutua; a galeria troca de aluno sozinha (ou ao tocar); o vídeo roda em loop; as letras do rodapé sobem como um perfil do fundo do mar; as linhas das tabelas entram em sequência. Tudo é desligado para quem pede movimento reduzido no sistema.
+- **Profundímetro:** na barra do topo, um medidor mostra a profundidade da "descida" conforme a página rola, de 0 a 4.000 m, com o nome de cada zona do oceano.
+
+## 9. Recursos de segurança
 
 - **Prepared statements em toda consulta que recebe dado externo:** `prepare()`, `bindValue()` com parâmetros nomeados e `execute()`. Nenhum valor do usuário é concatenado no SQL.
 - **Ordenação por lista branca:** `ORDER BY` não aceita parâmetro, então o usuário escolhe uma chave (`nome_asc`, `recentes`...) e o PHP troca pelo trecho SQL fixo correspondente.
@@ -115,7 +126,7 @@ Exclusão: o link abre uma tela de confirmação (GET, não apaga nada). Só o b
 - **Exclusão só por POST**, para que um link aberto por engano não apague dados.
 - **Erros de banco tratados:** duplicidade vira mensagem amigável; outros erros não são escondidos.
 
-## 9. Fluxo da aplicação
+## 10. Fluxo da aplicação
 
 ```text
 Usuário preenche o formulário
