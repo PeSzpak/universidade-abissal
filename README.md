@@ -4,6 +4,8 @@
 
 Projeto final **My Crazy University** da disciplina Tecnologias para Internet (Senac São José dos Pinhais, ADS).
 
+![Página inicial da Universidade Abissal](docs/media/home.webp)
+
 ## Integrantes
 
 - Pedro Szpak
@@ -19,6 +21,45 @@ Website institucional com dois cadastros ligados ao MySQL:
 
 - **Cursos:** cadastrar, consultar, editar e excluir. Um curso com alunos não pode ser excluído.
 - **Alunos:** cadastrar, consultar, editar e excluir, com **pesquisa por nome ou e-mail (`LIKE`)**, **filtros por curso e espécie**, **ordenação** (A-Z, Z-A, mais recentes, mais antigos) e **paginação com `LIMIT`/`OFFSET`** que mantém a pesquisa, os filtros e a ordem.
+
+| Alunos: pesquisa, filtros, ordenação e paginação | Cursos: contagem de alunos por curso |
+|---|---|
+| ![Lista de alunos com filtros e paginação](docs/media/alunos.webp) | ![Lista de cursos](docs/media/cursos.webp) |
+
+Prints do sistema rodando com `php -S` e o `database/banco.sql` (dados de exemplo, todos fictícios).
+
+## Como funciona
+
+```mermaid
+erDiagram
+    CURSOS ||--o{ ALUNOS : "matricula (ON DELETE RESTRICT)"
+    CURSOS {
+        INT id PK
+        VARCHAR(100) nome UK
+        VARCHAR(40) departamento
+        INT duracao_semestres
+        INT vagas
+        TEXT descricao
+        TIMESTAMP criado_em
+    }
+    ALUNOS {
+        INT id PK
+        VARCHAR(100) nome
+        VARCHAR(120) email UK
+        VARCHAR(30) especie
+        INT idade
+        INT curso_id FK
+        TIMESTAMP criado_em
+    }
+```
+
+```mermaid
+flowchart LR
+    L[alunos/listar.php] -->|GET busca, curso, especie, ordem, pagina| Q[SELECT ... WHERE LIKE ...<br/>ORDER BY ... LIMIT/OFFSET]
+    L --> C[cadastrar.php / editar.php] -->|POST validado| DB[(MySQL)]
+    L --> X[excluir.php<br/>GET confirma, POST apaga] -->|DELETE| DB
+    Q --> DB
+```
 
 Detalhes de banco, fluxo e segurança estão em [`docs/DOCUMENTACAO.md`](docs/DOCUMENTACAO.md).
 
@@ -76,4 +117,5 @@ alunos/                        CRUD de alunos (com pesquisa, filtros, ordem e pa
 assets/                        CSS e logotipo
 database/banco.sql             script do banco
 docs/DOCUMENTACAO.md           documentação sistêmica
+docs/media/                    prints do README
 ```
