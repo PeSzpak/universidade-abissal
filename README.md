@@ -68,7 +68,7 @@ Detalhes de banco, fluxo e segurança estão em [`docs/DOCUMENTACAO.md`](docs/DO
 - PHP 8 (sem framework)
 - MySQL / MariaDB
 - PDO com prepared statements
-- HTML5 e CSS3 (fontes Fraunces e Inter do Google Fonts)
+- HTML5, CSS3 e um pouco de JavaScript (`assets/js/movimento.js`), fonte Roundo do Fontshare
 
 ## Como executar
 
@@ -114,7 +114,7 @@ config/conexao.php             conexão PDO
 includes/                      cabeçalho, rodapé e funções compartilhadas
 cursos/                        CRUD de cursos
 alunos/                        CRUD de alunos (com pesquisa, filtros, ordem e paginação)
-assets/                        CSS e logotipo
+assets/                        CSS, JS, logotipo e gravuras/vídeo em domínio público (créditos em `assets/fotos/credits.json`)
 database/banco.sql             script do banco
 docs/DOCUMENTACAO.md           documentação sistêmica
 docs/media/                    prints do README
