@@ -1,0 +1,4 @@
+# No Apache (XAMPP), permite /api/cursos além de /api/index.php/cursos
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php/$1 [L,QSA]
