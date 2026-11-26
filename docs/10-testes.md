@@ -36,6 +36,17 @@ Testes executados manualmente em 26/11/2026, com MySQL 8.4 e `php -S`, a partir 
 | `GET /professores` | 404 |
 | Pesquisa `' OR 1=1 --` e ordem `nome; DROP TABLE alunos` | 200 sem resultados; tabela intacta (24 alunos) |
 
+## Testes de sanidade automáticos
+
+O script `tests/sanidade.sh` repete os principais cenários acima com `curl` e `jq`: abre as 8 páginas, confere pesquisa, filtros e paginação, provoca os erros 400, 404, 405, 409 e 422, tenta SQL injection e XSS e faz um ciclo de criar, duplicar e excluir um curso. No fim confere que o banco terminou com o mesmo número de alunos.
+
+```bash
+bash tests/sanidade.sh                                            # php -S localhost:8000
+BASE=http://localhost/universidade-abissal bash tests/sanidade.sh # XAMPP
+```
+
+Resultado em 26/11/2026: **24 passaram, 0 falharam**. Os testes de pesquisa e filtro esperam os dados de exemplo de `database/banco.sql`.
+
 ## Swagger
 
 A página `api/docs.html` carrega a especificação, lista as 11 operações em 3 grupos (Dashboard, Cursos, Alunos) e executa as requisições pelo **Try it out**.
