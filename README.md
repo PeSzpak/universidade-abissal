@@ -15,19 +15,22 @@ Uma universidade no fundo do oceano: o campus fica numa fossa a 4.000 metros, os
 
 ## Descrição do sistema
 
-Website institucional com dois cadastros ligados ao MySQL:
+Website institucional com dois cadastros ligados ao MySQL, um dashboard e uma API REST:
 
 - **Cursos:** cadastrar, consultar, editar e excluir. Um curso com alunos não pode ser excluído.
 - **Alunos:** cadastrar, consultar, editar e excluir, com **pesquisa por nome ou e-mail (`LIKE`)**, **filtros por curso e espécie**, **ordenação** (A-Z, Z-A, mais recentes, mais antigos) e **paginação com `LIMIT`/`OFFSET`** que mantém a pesquisa, os filtros e a ordem.
+- **Dashboard:** indicadores de ocupação das vagas, alunos por curso, espécie e departamento, e matrículas por mês (`dashboard.php`).
+- **API REST + Swagger:** as mesmas operações em JSON (`api/index.php`), com documentação interativa em `api/docs.html` gerada a partir da especificação OpenAPI 3 (`api/openapi.yaml`).
 
-Detalhes de banco, fluxo e segurança estão em [`docs/DOCUMENTACAO.md`](docs/DOCUMENTACAO.md).
+A documentação completa (requisitos, arquitetura, banco com DER, API, dashboard, segurança e testes) está em [`docs/`](docs/README.md).
 
 ## Tecnologias
 
 - PHP 8 (sem framework)
 - MySQL / MariaDB
 - PDO com prepared statements
-- HTML5 e CSS3 (fontes Fraunces e Inter do Google Fonts)
+- HTML5, CSS3 e JavaScript (fonte Roundo, do Fontshare)
+- API REST em JSON documentada com OpenAPI 3 e Swagger UI
 
 ## Como executar
 
@@ -75,5 +78,7 @@ cursos/                        CRUD de cursos
 alunos/                        CRUD de alunos (com pesquisa, filtros, ordem e paginação)
 assets/                        CSS e logotipo
 database/banco.sql             script do banco
-docs/DOCUMENTACAO.md           documentação sistêmica
+dashboard.php                  painel de indicadores
+api/                           API REST, openapi.yaml e Swagger UI (docs.html)
+docs/                          documentação estruturada (comece por docs/README.md)
 ```
