@@ -328,6 +328,33 @@ dl.detalhes { display: grid; grid-template-columns: max-content 1fr; gap: 10px 2
 dl.detalhes dt { color: var(--muted); }
 dl.detalhes dd { margin: 0; }
 
+/* ---------- Dashboard ---------- */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 8px 0 28px; }
+.kpi { background: var(--surface); padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+.kpi span { color: var(--muted); font-size: var(--step-small); }
+.kpi strong { font-size: clamp(2rem, 1.6rem + 1.4vw, 2.75rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.05; color: var(--luz); font-variant-numeric: tabular-nums; }
+.kpi small { color: var(--muted); font-size: var(--step-small); }
+.painel-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.bloco { background: var(--surface); padding: clamp(20px, 3vw, 28px); }
+.bloco h2 { font-size: var(--step-lead); margin-bottom: 20px; }
+.barras { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.barra-rotulo { display: flex; justify-content: space-between; gap: 12px; font-size: var(--step-small); margin-bottom: 6px; }
+.barra-rotulo a { text-decoration: none; font-weight: 600; }
+.barra-rotulo a:hover { color: var(--luz); }
+.barra-rotulo .forte { font-weight: 600; }
+.barra-rotulo span:last-child { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.barra { height: 12px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+.barra i { display: block; height: 100%; min-width: 12px; border-radius: 999px; background: var(--luz); transform-origin: left; animation: crescer 900ms var(--ease) both; }
+.colunas { display: flex; align-items: flex-end; gap: 14px; height: 220px; }
+.coluna { flex: 1; height: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.coluna strong { font-weight: 600; }
+.coluna span { color: var(--muted); font-size: var(--step-small); }
+.coluna-trilho { flex: 1; width: 100%; max-width: 72px; display: flex; align-items: flex-end; }
+.coluna-trilho i { display: block; width: 100%; border-radius: 12px 12px 4px 4px; background: var(--luz); transform-origin: bottom; animation: subir-coluna 900ms var(--ease) both; }
+@keyframes crescer { from { transform: scaleX(0); } }
+@keyframes subir-coluna { from { transform: scaleY(0); } }
+@media (max-width: 900px) { .painel-grade { grid-template-columns: 1fr; } }
+
 /* ---------- Rodapé: a marca construída como um perfil do fundo do mar ---------- */
 .rodape { background: var(--bg); padding: 96px var(--margem) 88px; }
 .marca-grande { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; align-items: end; height: clamp(140px, 30svh, 340px); margin-bottom: 56px; }
