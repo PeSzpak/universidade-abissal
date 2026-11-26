@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API · Universidade Abissal</title>
+    <link rel="icon" href="../assets/img/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14/swagger-ui.css" integrity="sha384-wxLW6kwyHktdDGr6Pv1zgm/VGJh99lfUbzSn6HNHBENZlCN7W602k9VkGdxuFvPn" crossorigin="anonymous">
+    <style>
+        body { margin: 0; background: #f6f8f7; }
+        .topo-api {
+            display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+            padding: 16px clamp(16px, 4vw, 56px); background: #06121c; color: #eef2ec;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        .topo-api a { color: #eef2ec; text-decoration: none; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1.1rem; }
+        .topo-api nav { display: flex; gap: 20px; font-size: .95rem; }
+        .topo-api nav a { color: #a9bcc0; font-weight: 500; }
+        .topo-api nav a:hover { color: #dcf06a; }
+        .swagger-ui .topbar { display: none; }
+        .swagger-ui .info .title { color: #06121c; }
+        .swagger-ui .btn.execute { background: #06121c; border-color: #06121c; }
+        .swagger-ui .opblock-tag { font-size: 1.3rem; }
+    </style>
+</head>
+<body>
+<header class="topo-api">
+    <a href="../index.php"><img src="../assets/img/logo.svg" alt="" width="36" height="36">Universidade Abissal · API</a>
+    <nav>
+        <a href="../index.php">Site</a>
+        <a href="../dashboard.php">Dashboard</a>
+        <a href="openapi.yaml">openapi.yaml</a>
+    </nav>
+</header>
+<div id="swagger-ui"></div>
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5.17.14/swagger-ui-bundle.js" integrity="sha384-wmyclcVGX/WhUkdkATwhaK1X1JtiNrr2EoYJ+diV3vj4v6OC5yCeSu+yW13SYJep" crossorigin="anonymous"></script>
+<script>
+    window.ui = SwaggerUIBundle({
+        url: "openapi.yaml",
+        dom_id: "#swagger-ui",
+        deepLinking: true,
+        docExpansion: "list",
+        defaultModelsExpandDepth: 0,
+        tryItOutEnabled: true,
+        displayRequestDuration: true
+    });
+</script>
+</body>
+</html>
