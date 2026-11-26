@@ -2,70 +2,20 @@
 require_once __DIR__ . "/../includes/funcoes.php";
 
 $pdo = conectar();
-$porPagina = 6;
 
-// Ordenação: só aceita chaves conhecidas, porque ORDER BY não pode ser parâmetro do prepared statement
-$ordens = [
-    "nome_asc"  => ["Nome A-Z", "a.nome ASC"],
-    "nome_desc" => ["Nome Z-A", "a.nome DESC"],
-    "recentes"  => ["Mais recentes", "a.criado_em DESC, a.id DESC"],
-    "antigos"   => ["Mais antigos", "a.criado_em ASC, a.id ASC"],
-];
-
-// 1. Lê pesquisa, filtros, ordem e página da URL
-$busca = trim($_GET["busca"] ?? "");
-$cursoFiltro = filter_var($_GET["curso"] ?? "", FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]);
-$especieFiltro = in_array($_GET["especie"] ?? "", ESPECIES, true) ? $_GET["especie"] : "";
-$ordem = array_key_exists($_GET["ordem"] ?? "", $ordens) ? $_GET["ordem"] : "nome_asc";
-$pagina = filter_var($_GET["pagina"] ?? 1, FILTER_VALIDATE_INT, ["options" => ["min_range" => 1]]) ?: 1;
-
-// 2. Monta o WHERE só com trechos fixos; os valores vão em parâmetros nomeados
-$condicoes = [];
-$parametros = [];
-if ($busca !== "") {
-    // LIKE com % dos dois lados: encontra o texto em qualquer parte do nome ou do e-mail
-    $termo = "%" . addcslashes($busca, "%_\\") . "%";
-    $condicoes[] = "(a.nome LIKE :busca_nome OR a.email LIKE :busca_email)";
-    $parametros[":busca_nome"] = $termo;
-    $parametros[":busca_email"] = $termo;
-}
-if ($cursoFiltro !== false) {
-    $condicoes[] = "a.curso_id = :curso";
-    $parametros[":curso"] = $cursoFiltro;
-}
-if ($especieFiltro !== "") {
-    $condicoes[] = "a.especie = :especie";
-    $parametros[":especie"] = $especieFiltro;
-}
-$where = count($condicoes) > 0 ? "WHERE " . implode(" AND ", $condicoes) : "";
-
-// 3. Conta o total para calcular as páginas
-$contagem = $pdo->prepare("SELECT COUNT(*) FROM alunos a $where");
-foreach ($parametros as $nome => $valor) {
-    $contagem->bindValue($nome, $valor, is_int($valor) ? PDO::PARAM_INT : PDO::PARAM_STR);
-}
-$contagem->execute();
-$total = (int) $contagem->fetchColumn();
-
-$totalPaginas = max(1, (int) ceil($total / $porPagina));
-$pagina = min($pagina, $totalPaginas);
-$offset = ($pagina - 1) * $porPagina;
-
-// 4. Busca só a página atual com LIMIT e OFFSET
-$consulta = $pdo->prepare(
-    "SELECT a.id, a.nome, a.email, a.especie, a.idade, a.criado_em, c.nome AS curso
-     FROM alunos a JOIN cursos c ON c.id = a.curso_id
-     $where
-     ORDER BY {$ordens[$ordem][1]}
-     LIMIT :limite OFFSET :offset"
-);
-foreach ($parametros as $nome => $valor) {
-    $consulta->bindValue($nome, $valor, is_int($valor) ? PDO::PARAM_INT : PDO::PARAM_STR);
-}
-$consulta->bindValue(":limite", $porPagina, PDO::PARAM_INT);
-$consulta->bindValue(":offset", $offset, PDO::PARAM_INT);
-$consulta->execute();
-$alunos = $consulta->fetchAll();
+// Pesquisa, filtros, ordenação e paginação ficam em consultarAlunos() (includes/funcoes.php),
+// a mesma função usada pela API em api/index.php.
+[
+    "alunos" => $alunos,
+    "total" => $total,
+    "pagina" => $pagina,
+    "totalPaginas" => $totalPaginas,
+    "busca" => $busca,
+    "curso" => $cursoFiltro,
+    "especie" => $especieFiltro,
+    "ordem" => $ordem,
+] = consultarAlunos($pdo, $_GET, 6);
+$ordens = ORDENS_ALUNOS;
 
 $cursos = $pdo->query("SELECT id, nome FROM cursos ORDER BY nome")->fetchAll();
 
