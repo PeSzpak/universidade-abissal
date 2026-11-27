@@ -4,10 +4,11 @@
 
 Projeto final **My Crazy University** da disciplina Tecnologias para Internet (Senac São José dos Pinhais, ADS).
 
-## Integrantes
+![Página inicial da Universidade Abissal](docs/media/home.webp)
+
+## Autor
 
 - Pedro Szpak
-- _(adicione aqui os demais integrantes do grupo)_
 
 ## Tema
 
@@ -23,6 +24,12 @@ Website institucional com dois cadastros ligados ao MySQL, um dashboard e uma AP
 - **API REST + Swagger:** as mesmas operações em JSON (`api/index.php`), com documentação interativa em `api/docs.html` gerada a partir da especificação OpenAPI 3 (`api/openapi.yaml`).
 
 A documentação completa (requisitos, arquitetura, banco com DER, API, dashboard, segurança e testes) está em [`docs/`](docs/README.md).
+
+## Telas
+
+| Alunos | Cursos |
+|---|---|
+| ![Lista de alunos com filtros e paginação](docs/media/alunos.webp) | ![Lista de cursos](docs/media/cursos.webp) |
 
 ## Tecnologias
 
