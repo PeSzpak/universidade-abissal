@@ -11,6 +11,7 @@ $menu = [
     "universidade" => ["institucional.php", "A Universidade"],
     "cursos" => ["cursos/listar.php", "Cursos"],
     "alunos" => ["alunos/listar.php", "Alunos"],
+    "dashboard" => ["dashboard.php", "Dashboard"],
 ];
 ?>
 <!DOCTYPE html>

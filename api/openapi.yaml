@@ -1,0 +1,397 @@
+openapi: 3.0.3
+info:
+  title: API da Universidade Abissal
+  version: 1.0.0
+  description: |
+    API REST em PHP + MySQL da **Universidade Abissal**, a universidade a 4.000 metros de profundidade.
+
+    Expõe os mesmos dados e as mesmas regras das telas do site:
+    - **Cursos** e **Alunos**: cadastrar, consultar, editar e excluir.
+    - **Dashboard**: indicadores de ocupação, espécies, departamentos e matrículas por mês.
+
+    Todas as consultas que recebem valores externos usam *prepared statements* (PDO), e as
+    validações são as mesmas funções usadas pelos formulários (`includes/funcoes.php`).
+
+    Erros sempre voltam no formato `{"erro": "...", "campos": [...]}`.
+  contact:
+    name: Repositório no GitHub
+    url: https://github.com/PeSzpak/universidade-abissal
+
+servers:
+  - url: index.php
+    description: Este servidor (funciona no XAMPP e no php -S)
+
+tags:
+  - name: Dashboard
+    description: Indicadores consolidados para o painel
+  - name: Cursos
+    description: CRUD de cursos
+  - name: Alunos
+    description: CRUD de alunos, com pesquisa, filtros, ordenação e paginação
+
+paths:
+  /dashboard:
+    get:
+      tags: [Dashboard]
+      summary: Indicadores do painel
+      description: Os mesmos números exibidos na página `dashboard.php`.
+      operationId: obterDashboard
+      responses:
+        "200":
+          description: Indicadores calculados no momento da consulta
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Dashboard" }
+
+  /cursos:
+    get:
+      tags: [Cursos]
+      summary: Lista todos os cursos
+      operationId: listarCursos
+      responses:
+        "200":
+          description: Cursos em ordem alfabética, com a quantidade de alunos de cada um
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Curso" }
+    post:
+      tags: [Cursos]
+      summary: Cadastra um curso
+      operationId: cadastrarCurso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CursoEntrada" }
+      responses:
+        "201":
+          description: Curso criado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Curso" }
+        "400": { $ref: "#/components/responses/JsonInvalido" }
+        "409":
+          description: Já existe um curso com esse nome
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Erro" }
+              example: { erro: "Já existe um curso com esse nome.", campos: [] }
+        "422": { $ref: "#/components/responses/DadosInvalidos" }
+
+  /cursos/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Cursos]
+      summary: Consulta um curso
+      operationId: consultarCurso
+      responses:
+        "200":
+          description: Curso encontrado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Curso" }
+        "404": { $ref: "#/components/responses/NaoEncontrado" }
+    put:
+      tags: [Cursos]
+      summary: Edita um curso
+      operationId: editarCurso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CursoEntrada" }
+      responses:
+        "200":
+          description: Curso atualizado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Curso" }
+        "400": { $ref: "#/components/responses/JsonInvalido" }
+        "404": { $ref: "#/components/responses/NaoEncontrado" }
+        "409":
+          description: Já existe outro curso com esse nome
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Erro" }
+        "422": { $ref: "#/components/responses/DadosInvalidos" }
+    delete:
+      tags: [Cursos]
+      summary: Exclui um curso
+      description: Um curso com alunos matriculados não pode ser excluído.
+      operationId: excluirCurso
+      responses:
+        "204": { description: Curso excluído }
+        "404": { $ref: "#/components/responses/NaoEncontrado" }
+        "409":
+          description: O curso tem alunos matriculados
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Erro" }
+              example: { erro: "Não é possível excluir \"Bioluminescência Aplicada\": há 5 aluno(s) matriculado(s).", campos: [] }
+
+  /alunos:
+    get:
+      tags: [Alunos]
+      summary: Lista alunos com pesquisa, filtros, ordenação e paginação
+      operationId: listarAlunos
+      parameters:
+        - name: busca
+          in: query
+          description: Parte do nome ou do e-mail (pesquisa com LIKE)
+          schema: { type: string, example: polv }
+        - name: curso
+          in: query
+          description: Filtra pelo id do curso
+          schema: { type: integer, minimum: 1, example: 4 }
+        - name: especie
+          in: query
+          description: Filtra pela espécie
+          schema: { $ref: "#/components/schemas/Especie" }
+        - name: ordem
+          in: query
+          schema:
+            type: string
+            enum: [nome_asc, nome_desc, recentes, antigos]
+            default: nome_asc
+        - name: pagina
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: por_pagina
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
+      responses:
+        "200":
+          description: Página de alunos, com os dados da paginação e os filtros aplicados
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ListaAlunos" }
+    post:
+      tags: [Alunos]
+      summary: Matricula um aluno
+      operationId: matricularAluno
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AlunoEntrada" }
+      responses:
+        "201":
+          description: Aluno matriculado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Aluno" }
+        "400": { $ref: "#/components/responses/JsonInvalido" }
+        "409":
+          description: E-mail já usado por outro aluno
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Erro" }
+              example: { erro: "Esse e-mail já está em uso por outro aluno.", campos: [] }
+        "422": { $ref: "#/components/responses/DadosInvalidos" }
+
+  /alunos/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Alunos]
+      summary: Consulta um aluno
+      operationId: consultarAluno
+      responses:
+        "200":
+          description: Aluno encontrado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Aluno" }
+        "404": { $ref: "#/components/responses/NaoEncontrado" }
+    put:
+      tags: [Alunos]
+      summary: Edita um aluno
+      operationId: editarAluno
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/AlunoEntrada" }
+      responses:
+        "200":
+          description: Aluno atualizado
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Aluno" }
+        "400": { $ref: "#/components/responses/JsonInvalido" }
+        "404": { $ref: "#/components/responses/NaoEncontrado" }
+        "409":
+          description: E-mail já usado por outro aluno
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Erro" }
+        "422": { $ref: "#/components/responses/DadosInvalidos" }
+    delete:
+      tags: [Alunos]
+      summary: Exclui um aluno
+      operationId: excluirAluno
+      responses:
+        "204": { description: Aluno excluído }
+        "404": { $ref: "#/components/responses/NaoEncontrado" }
+
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1, example: 1 }
+
+  responses:
+    NaoEncontrado:
+      description: Registro não encontrado
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Erro" }
+          example: { erro: "Curso 99 não encontrado.", campos: [] }
+    JsonInvalido:
+      description: O corpo da requisição não é um JSON válido
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Erro" }
+          example: { erro: "O corpo da requisição precisa ser um JSON válido.", campos: [] }
+    DadosInvalidos:
+      description: Algum campo não passou na validação (as mesmas regras dos formulários)
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Erro" }
+          example:
+            erro: Dados inválidos.
+            campos:
+              - O nome do curso é obrigatório.
+              - A duração deve ser um número inteiro entre 1 e 12 semestres.
+
+  schemas:
+    Departamento:
+      type: string
+      enum: [Zona Abissal, Fossas Oceânicas, Recifes de Coral, Superfície]
+      example: Zona Abissal
+
+    Especie:
+      type: string
+      enum: [Polvo, Lula-gigante, Peixe-lanterna, Tubarão, Água-viva, Cavalo-marinho, Baleia, Caranguejo]
+      example: Polvo
+
+    CursoEntrada:
+      type: object
+      required: [nome, departamento, duracao_semestres, vagas]
+      properties:
+        nome: { type: string, maxLength: 100, example: Oceanografia Profunda }
+        departamento: { $ref: "#/components/schemas/Departamento" }
+        duracao_semestres: { type: integer, minimum: 1, maximum: 12, example: 8 }
+        vagas: { type: integer, minimum: 1, example: 30 }
+        descricao: { type: string, example: Estudo das correntes e da vida abaixo dos 4.000 metros. }
+
+    Curso:
+      allOf:
+        - type: object
+          properties:
+            id: { type: integer, example: 1 }
+        - $ref: "#/components/schemas/CursoEntrada"
+        - type: object
+          properties:
+            total_alunos: { type: integer, example: 5 }
+
+    AlunoEntrada:
+      type: object
+      required: [nome, email, especie, idade, curso_id]
+      properties:
+        nome: { type: string, maxLength: 100, example: Nemo Coralino }
+        email: { type: string, format: email, description: Único entre os alunos (gravado em minúsculas), example: nemo@abissal.edu }
+        especie: { $ref: "#/components/schemas/Especie" }
+        idade: { type: integer, minimum: 1, maximum: 500, example: 19 }
+        curso_id: { type: integer, description: Precisa ser um curso existente, example: 4 }
+
+    Aluno:
+      allOf:
+        - type: object
+          properties:
+            id: { type: integer, example: 25 }
+        - $ref: "#/components/schemas/AlunoEntrada"
+        - type: object
+          properties:
+            curso: { type: string, example: Tinta de Polvo e Artes Visuais }
+            criado_em: { type: string, description: Data e hora da matrícula, example: "2026-11-26 22:38:51" }
+
+    ListaAlunos:
+      type: object
+      properties:
+        dados:
+          type: array
+          items: { $ref: "#/components/schemas/Aluno" }
+        paginacao:
+          type: object
+          properties:
+            pagina: { type: integer, example: 1 }
+            por_pagina: { type: integer, example: 10 }
+            total: { type: integer, example: 24 }
+            total_paginas: { type: integer, example: 3 }
+        filtros:
+          type: object
+          properties:
+            busca: { type: string, example: "" }
+            curso: { type: integer, nullable: true, example: null }
+            especie: { type: string, nullable: true, example: null }
+            ordem: { type: string, example: nome_asc }
+
+    Dashboard:
+      type: object
+      properties:
+        totais:
+          type: object
+          properties:
+            alunos: { type: integer, example: 24 }
+            cursos: { type: integer, example: 6 }
+            vagas: { type: integer, example: 180 }
+            ocupacao_percentual: { type: number, example: 13.3 }
+            idade_media: { type: number, example: 23.6 }
+            especies: { type: integer, example: 8 }
+        por_curso:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer, example: 1 }
+              nome: { type: string, example: Bioluminescência Aplicada }
+              departamento: { type: string, example: Zona Abissal }
+              vagas: { type: integer, example: 40 }
+              alunos: { type: integer, example: 5 }
+              ocupacao_percentual: { type: number, example: 12.5 }
+        por_especie:
+          type: array
+          items:
+            type: object
+            properties:
+              especie: { type: string, example: Polvo }
+              alunos: { type: integer, example: 3 }
+        por_departamento:
+          type: array
+          items:
+            type: object
+            properties:
+              departamento: { type: string, example: Zona Abissal }
+              cursos: { type: integer, example: 2 }
+              alunos: { type: integer, example: 9 }
+        matriculas_por_mes:
+          type: array
+          items:
+            type: object
+            properties:
+              mes: { type: string, example: "2026-02" }
+              matriculas: { type: integer, example: 16 }
+
+    Erro:
+      type: object
+      properties:
+        erro: { type: string }
+        campos:
+          type: array
+          items: { type: string }

@@ -25,6 +25,8 @@ $letras = ["A" => 64, "B" => 82, "I" => 100, "S" => 88, "S " => 70, "A " => 94, 
                 <li><a href="<?= $base ?>cursos/listar.php">Cursos</a></li>
                 <li><a href="<?= $base ?>alunos/listar.php">Alunos</a></li>
                 <li><a href="<?= $base ?>alunos/cadastrar.php">Matricular aluno</a></li>
+                <li><a href="<?= $base ?>dashboard.php">Dashboard</a></li>
+                <li><a href="<?= $base ?>api/docs.html">API (Swagger)</a></li>
             </ul>
         </div>
         <div>
