@@ -6,10 +6,9 @@ Projeto final **My Crazy University** da disciplina Tecnologias para Internet (S
 
 ![Página inicial da Universidade Abissal](docs/media/home.webp)
 
-## Integrantes
+## Autor
 
 - Pedro Szpak
-- _(adicione aqui os demais integrantes do grupo)_
 
 ## Tema
 
